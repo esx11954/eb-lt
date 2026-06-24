@@ -159,8 +159,8 @@ body[data-mode='test']{
 .badge.pass{background:var(--green-tint); color:var(--green)}
 .badge.fail{background:var(--red-tint); color:var(--red)}
 .res-actions{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:26px}
-.res-back{margin-top:18px; border-top:1px solid var(--line-soft); padding-top:16px}
-.res-back .btn{font-size:14px; padding:11px 20px}
+.res-back{margin-top:18px; border-top:1px solid var(--line-soft); padding-top:16px; display:flex; gap:10px; flex-wrap:wrap}
+.res-back .btn{font-size:14px; padding:11px 20px; display:inline-flex; align-items:center; text-decoration:none}
 
 /* ---------- review ---------- */
 .review{margin-top:26px; display:flex; flex-direction:column; gap:14px; padding-bottom:30px}
@@ -442,7 +442,10 @@ function finish(){
         '<button class="btn btn-primary" id="dlBtn">テスト結果をダウンロード</button>'+
         '<button class="btn btn-ghost" id="revealBtn">解答を表示する</button>'+
       '</div>'+
-      '<div class="res-back"><button class="btn btn-ghost" id="backBtn">受験者名・範囲を選び直す</button></div>'+
+      '<div class="res-back">'+
+        '<button class="btn btn-ghost" id="backBtn">受験者名・範囲を選び直す</button>'+
+        '<a class="btn btn-ghost" href="index.html">📖 ハンドブックに戻る</a>'+
+      '</div>'+
     '</div>';
   $('#dlBtn').addEventListener('click', downloadJSON);
   $('#revealBtn').addEventListener('click', reveal);
