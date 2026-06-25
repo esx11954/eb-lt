@@ -1,0 +1,12 @@
+{
+  "test": "Stage1 Knowledge Test",
+  "examinee": "佐藤　美咲",
+  "date": "2026-06-12",
+  "score": {
+    "correct": 16,
+    "total": 25,
+    "percent": 64,
+    "result": "fail"
+  },
+  "checksum": "ebit-1-2026-06-12-16"
+}

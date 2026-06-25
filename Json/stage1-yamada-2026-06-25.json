@@ -1,0 +1,12 @@
+{
+  "test": "Stage1 Knowledge Test",
+  "examinee": "山田　航介",
+  "date": "2026-06-25",
+  "score": {
+    "correct": 0,
+    "total": 25,
+    "percent": 0,
+    "result": "fail"
+  },
+  "checksum": "ebit-1-2026-06-25-0"
+}

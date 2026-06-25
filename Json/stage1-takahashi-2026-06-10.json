@@ -1,0 +1,12 @@
+{
+  "test": "Stage1 Knowledge Test",
+  "examinee": "高橋　蓮",
+  "date": "2026-06-10",
+  "score": {
+    "correct": 24,
+    "total": 25,
+    "percent": 96,
+    "result": "pass"
+  },
+  "checksum": "ebit-1-2026-06-10-24"
+}

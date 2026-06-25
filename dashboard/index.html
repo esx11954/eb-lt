@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./vendor/react.production.min.js"></script>
+<script src="./vendor/react-dom.production.min.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0}
+  @keyframes ebFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @keyframes ebSpin{to{transform:rotate(360deg)}}
+  ::-webkit-scrollbar{height:10px;width:10px}
+  ::-webkit-scrollbar-thumb{background:#c3d0ce;border-radius:99px}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#e9eef1;font-family:'Noto Sans JP',sans-serif;color:#15302f">
+
+  <div style="position:relative;overflow:hidden;background:linear-gradient(140deg,#0a2624 0%,#0e3a3c 55%,#091d20 100%);color:#fff">
+    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(120,200,190,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(120,200,190,.06) 1px,transparent 1px);background-size:46px 46px;pointer-events:none"></div>
+    <div style="position:relative;max-width:1200px;margin:0 auto;padding:40px 40px 54px;display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap">
+      <div style="max-width:660px">
+        <div style="font-family:'Roboto Mono',monospace;font-size:12px;letter-spacing:.22em;color:#5fb3ac;font-weight:500;margin-bottom:18px">EIGHT BIT INC.｜受講進捗</div>
+        <h1 style="margin:0;font-size:40px;line-height:1.18;font-weight:900;letter-spacing:.01em">受講者 <span style="color:#2fd4c4">進捗</span>ダッシュボード</h1>
+        <p style="margin:18px 0 0;font-size:15px;line-height:1.85;color:#b6cdca">受講者ごとに、パート別の<strong style="color:#dff3ef;font-weight:700">最高得点</strong>と<strong style="color:#dff3ef;font-weight:700">最新の受験日</strong>をまとめて表示します。行をクリックすると、その人の受験履歴が見られます。</p>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:12px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="{{ sourceDotStyle }}"></span>
+          <span style="font-family:'Roboto Mono',monospace;font-size:12px;color:#cfe6e2">{{ sourceLabel }}</span>
+        </div>
+        <button onClick="{{ onRefresh }}" style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.06);border:1px solid rgba(120,200,190,.3);color:#eafaf7;border-radius:10px;padding:9px 16px;font-size:13px;font-weight:700;font-family:'Noto Sans JP';cursor:pointer" style-hover="background:rgba(47,212,196,.15)">
+          <span style="{{ spinStyle }}">↻</span> 再読み込み
+        </button>
+        <div style="font-family:'Roboto Mono',monospace;font-size:11px;color:#79aaa4;letter-spacing:.03em">{{ loadedLabel }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:1200px;margin:0 auto;padding:0 40px 80px">
+
+    <sc-if value="{{ fallbackNote }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:-18px;position:relative;z-index:3;background:#fdf6e6;border:1px solid #f0e0b4;border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 22px -16px rgba(13,50,52,.4)">
+        <span style="width:8px;height:8px;border-radius:50%;background:#d9a23b;flex:none"></span>
+        <span style="font-size:13px;color:#8a6d2a;line-height:1.6"><strong style="font-weight:700">Json フォルダを読み込めませんでした。</strong>ファイルを直接ダブルクリックで開くと、ブラウザの制約で読み込めません。付属の「ダッシュボードを開く」（または GitHub Pages）から開いてください。</span>
+      </div>
+    </sc-if>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px;position:relative;z-index:2">
+      <div style="background:#fff;border-radius:16px;padding:22px 24px;box-shadow:0 10px 30px -18px rgba(13,50,52,.45)">
+        <div style="font-size:12px;letter-spacing:.06em;color:#8aa3a0;font-weight:700">受講者</div>
+        <div style="font-family:'Roboto Mono',monospace;font-size:30px;font-weight:700;color:#10403e;margin-top:8px">{{ stat.learners }}<span style="font-size:14px;color:#9fb0ae;font-weight:500"> 名</span></div>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:22px 24px;box-shadow:0 10px 30px -18px rgba(13,50,52,.45)">
+        <div style="font-size:12px;letter-spacing:.06em;color:#8aa3a0;font-weight:700">受験回数</div>
+        <div style="font-family:'Roboto Mono',monospace;font-size:30px;font-weight:700;color:#10403e;margin-top:8px">{{ stat.subs }}<span style="font-size:14px;color:#9fb0ae;font-weight:500"> 回</span></div>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:22px 24px;box-shadow:0 10px 30px -18px rgba(13,50,52,.45)">
+        <div style="font-size:12px;letter-spacing:.06em;color:#8aa3a0;font-weight:700">最終受験日</div>
+        <div style="font-family:'Roboto Mono',monospace;font-size:30px;font-weight:700;color:#10403e;margin-top:8px">{{ stat.lastDate }}</div>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin:38px 0 14px;flex-wrap:wrap;gap:12px">
+      <h2 style="margin:0;font-size:19px;font-weight:700;color:#13302e">パート別 進捗一覧</h2>
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:7px"><span style="width:11px;height:11px;border-radius:3px;background:#daf0e9;border:1px solid #b6e2d6"></span><span style="font-family:'Roboto Mono',monospace;font-size:11px;color:#6f8784">合格 {{ thresholdLabel }}+</span></div>
+        <div style="display:flex;align-items:center;gap:7px"><span style="width:11px;height:11px;border-radius:3px;background:#fbf0db;border:1px solid #f0dcae"></span><span style="font-family:'Roboto Mono',monospace;font-size:11px;color:#6f8784">あと一歩</span></div>
+        <div style="display:flex;align-items:center;gap:7px"><span style="width:11px;height:11px;border-radius:3px;background:#fbe7e2;border:1px solid #f3cdc4"></span><span style="font-family:'Roboto Mono',monospace;font-size:11px;color:#6f8784">要復習</span></div>
+        <div style="display:flex;align-items:center;gap:7px"><span style="width:11px;height:11px;border-radius:3px;background:#eef2f1;border:1px dashed #c3d0ce"></span><span style="font-family:'Roboto Mono',monospace;font-size:11px;color:#6f8784">未受験</span></div>
+      </div>
+    </div>
+
+    <div style="background:#fff;border-radius:18px;box-shadow:0 18px 50px -28px rgba(13,50,52,.5);overflow:hidden">
+      <div style="overflow-x:auto">
+        <div style="min-width:900px">
+
+          <div style="display:grid;grid-template-columns:212px repeat(5,minmax(126px,1fr)) 40px;align-items:center;padding:0 8px;border-bottom:1px solid #eef2f1;background:#fafbfb">
+            <div style="font-family:'Roboto Mono',monospace;font-size:11px;letter-spacing:.1em;color:#8aa3a0;padding:14px 16px;text-transform:uppercase">受講者</div>
+            <div style="font-family:'Roboto Mono',monospace;font-size:11px;letter-spacing:.1em;color:#8aa3a0;padding:14px 12px">PART 1</div>
+            <div style="font-family:'Roboto Mono',monospace;font-size:11px;letter-spacing:.1em;color:#8aa3a0;padding:14px 12px">PART 2</div>
+            <div style="font-family:'Roboto Mono',monospace;font-size:11px;letter-spacing:.1em;color:#8aa3a0;padding:14px 12px">PART 3</div>
+            <div style="font-family:'Roboto Mono',monospace;font-size:11px;letter-spacing:.1em;color:#8aa3a0;padding:14px 12px">PART 4</div>
+            <div style="font-family:'Roboto Mono',monospace;font-size:11px;letter-spacing:.1em;color:#8aa3a0;padding:14px 12px">PART 5</div>
+            <div></div>
+          </div>
+
+          <sc-for list="{{ roster }}" as="r" hint-placeholder-count="5">
+            <div style="border-bottom:1px solid #f1f4f3">
+              <div onClick="{{ r.onToggle }}" style="display:grid;grid-template-columns:212px repeat(5,minmax(126px,1fr)) 40px;align-items:stretch;padding:8px;cursor:pointer" style-hover="background:#f6f9f8">
+                <div style="padding:8px 16px;display:flex;flex-direction:column;justify-content:center;gap:5px">
+                  <div style="font-size:15px;font-weight:700;color:#16322f">{{ r.name }}</div>
+                  <div><span style="{{ r.clearBadgeStyle }}">クリア {{ r.clearedLabel }}</span></div>
+                </div>
+                <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="5">
+                  <div style="padding:4px 6px">
+                    <div style="{{ c.boxStyle }}">
+                      <sc-if value="{{ c.empty }}" hint-placeholder-val="{{ true }}">
+                        <span style="font-family:'Roboto Mono',monospace;font-size:12px;color:#a9b8b6">未受験</span>
+                      </sc-if>
+                      <sc-if value="{{ c.filled }}" hint-placeholder-val="{{ true }}">
+                        <div style="display:flex;align-items:baseline;gap:6px">
+                          <span style="{{ c.numStyle }}">{{ c.percentLabel }}</span>
+                          <span style="font-family:'Roboto Mono',monospace;font-size:11px;color:#889795">{{ c.scoreLabel }}</span>
+                        </div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:7px">
+                          <span style="font-family:'Roboto Mono',monospace;font-size:11px;color:#92a3a0">{{ c.dateLabel }}</span>
+                          <span style="{{ c.attemptStyle }}">{{ c.attemptsLabel }}</span>
+                        </div>
+                      </sc-if>
+                    </div>
+                  </div>
+                </sc-for>
+                <div style="display:flex;align-items:center;justify-content:center">
+                  <span style="{{ r.chevronStyle }}">›</span>
+                </div>
+              </div>
+
+              <sc-if value="{{ r.expanded }}" hint-placeholder-val="{{ false }}">
+                <div style="background:#f7faf9;padding:8px 24px 22px;animation:ebFade .22s ease both">
+                  <div style="font-family:'Roboto Mono',monospace;font-size:11px;letter-spacing:.12em;color:#8aa3a0;padding:12px 0 10px;text-transform:uppercase">提出履歴 — {{ r.attemptCount }} 件</div>
+                  <sc-for list="{{ r.attempts }}" as="a" hint-placeholder-count="3">
+                    <div style="display:grid;grid-template-columns:96px 120px 1fr 70px 84px;align-items:center;gap:12px;padding:11px 16px;background:#fff;border:1px solid #eef2f1;border-radius:12px;margin-bottom:8px">
+                      <span style="font-weight:700;font-size:13px;color:#16322f">{{ a.partLabel }}</span>
+                      <span style="font-family:'Roboto Mono',monospace;font-size:13px;color:#5d706e">{{ a.dateLabel }}</span>
+                      <div style="height:8px;background:#eef2f1;border-radius:99px;overflow:hidden"><div style="{{ a.fillStyle }}"></div></div>
+                      <span style="font-family:'Roboto Mono',monospace;font-size:13px;font-weight:700;color:#16322f;text-align:right">{{ a.pctLabel }}</span>
+                      <span style="{{ a.chipStyle }}">{{ a.resultLabel }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+
+          <sc-if value="{{ showLoading }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:56px 24px;text-align:center;color:#8aa3a0;font-family:'Roboto Mono',monospace;font-size:13px">データを読み込み中…</div>
+          </sc-if>
+          <sc-if value="{{ showEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:64px 24px;text-align:center;color:#8aa3a0">
+              <div style="font-size:15px;font-weight:700;color:#5d706e">まだ受験結果がありません</div>
+              <div style="font-size:12px;margin-top:8px;color:#8aa3a0">受験が登録されると、ここに進捗が表示されます</div>
+            </div>
+          </sc-if>
+
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;color:#9aaca9;margin-top:18px;text-align:center;letter-spacing:.03em">行をクリックすると、その受講者の受験履歴が表示されます</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:860},&quot;passThreshold&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:80,&quot;min&quot;:50,&quot;max&quot;:100,&quot;step&quot;:5,&quot;tsType&quot;:&quot;number&quot;},&quot;sortBy&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;progress&quot;,&quot;options&quot;:[&quot;progress&quot;,&quot;recent&quot;,&quot;name&quot;],&quot;tsType&quot;:&quot;string&quot;},&quot;dataDir&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;./Json/&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;ghOwner&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;ghRepo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;ghBranch&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;main&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;ghPath&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Json&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { users: [], expanded: {}, loading: true, loadError: false, source: '', loadedAt: null };
+
+  componentDidMount(){
+    this.loadData();
+    this._poll = setInterval(()=>this.loadData(true), 60000);
+  }
+  componentWillUnmount(){ if (this._poll) clearInterval(this._poll); }
+
+  threshold(){ return this.props.passThreshold ?? 80; }
+  // 既定は「dashboard フォルダと同階層の Json フォルダ」= ../Json/
+  dataDir(){ let d = this.props.dataDir ?? '../Json/'; if (!d.endsWith('/')) d += '/'; return d; }
+  // 読み込み先リポジトリの候補を返す。
+  // ・props で ghOwner/ghRepo を明示していればそれを最優先。
+  // ・無ければ GitHub Pages の URL から自動推定する。dataDir（既定 ../Json/）を
+  //   ページURL基準で絶対URLに解決するので、Json が何階層目でも正しく当たる。
+  //   → リポジトリに置いて Pages を有効にするだけで、設定ゼロで動く。
+  ghCandidates(){
+    const o = (this.props.ghOwner || '').trim();
+    const r = (this.props.ghRepo  || '').trim();
+    const br = (this.props.ghBranch || '').trim();
+    const explicitPath = (this.props.ghPath || '').trim().replace(/^\/+|\/+$/g,'');
+    if (o && r) return [{ owner:o, repo:r, branch:br, path: explicitPath || 'Json' }];
+    try {
+      const m = /^([a-z0-9-]+)\.github\.io$/i.exec(location.hostname);
+      if (!m) return [];
+      const owner = m[1];
+      // Json フォルダの絶対パスをページURL基準で解決（../Json/ も正しく処理）
+      const jsonUrl = new URL(this.dataDir(), location.href);
+      const segs = jsonUrl.pathname.split('/').filter(Boolean); // 例: ['repo','Json']
+      if (!segs.length) return [];
+      const out = [];
+      // プロジェクトページ: owner.github.io/<repo>/<...>/Json → 先頭=repo, 残り=path
+      out.push({ owner, repo: segs[0], branch:'', path: segs.slice(1).join('/') || 'Json' });
+      // ユーザー/組織ページ: owner.github.io/<...>/Json → repo=owner.github.io, 全体=path
+      out.push({ owner, repo: owner + '.github.io', branch:'', path: segs.join('/') });
+      return out;
+    } catch(e){ return []; }
+  }
+
+  parsePart(t){ const m = /(?:stage|part)\s*([0-9]+)/i.exec(t || ''); return m ? parseInt(m[1],10) : 1; }
+
+  collect(map, j){
+    if (!j || !j.examinee) return;
+    const name = String(j.examinee).trim().replace(/　/g,' ');
+    const key = name.replace(/\s/g,'');
+    if (!key) return;
+    const part = this.parsePart(j.test);
+    const total = (j.score && j.score.total) || (Array.isArray(j.answers) ? j.answers.length : 25);
+    const correct = (j.score && typeof j.score.correct === 'number') ? j.score.correct
+      : (Array.isArray(j.answers) ? j.answers.filter(a=>a.correct).length : 0);
+    const percent = (j.score && typeof j.score.percent === 'number') ? j.score.percent : Math.round(correct/total*100);
+    const sub = { part, date: j.date || '', correct, total, percent, checksum: j.checksum || (key + part + (j.date||'')) };
+    if (!map[key]) map[key] = { key, name, submissions: [] };
+    if (!map[key].submissions.some(s=>s.checksum===sub.checksum)) map[key].submissions.push(sub);
+  }
+
+  // ① GitHub Contents API で Json フォルダの中身を自動列挙して読む（manifest不要）。
+  //    公開リポジトリなら認証不要（未認証は 60req/h 制限）。
+  async loadFromGitHub(){
+    const cands = this.ghCandidates();
+    if (!cands.length) throw new Error('no-repo');
+    for (const c of cands) {
+      try {
+        const ref = c.branch ? ('?ref=' + encodeURIComponent(c.branch)) : '';
+        const api = 'https://api.github.com/repos/' + c.owner + '/' + c.repo + '/contents/' + c.path + ref;
+        const res = await fetch(api, { headers:{ 'Accept':'application/vnd.github+json' }, cache:'no-store' });
+        if (!res.ok) continue;
+        const items = await res.json();
+        if (!Array.isArray(items)) continue;
+        const jsons = items.filter(it => it && it.type === 'file'
+          && /\.json$/i.test(it.name) && it.name !== 'manifest.json');
+        const map = {};
+        await Promise.all(jsons.map(async (it)=>{
+          try {
+            const url = it.download_url
+              || ('https://raw.githubusercontent.com/' + c.owner + '/' + c.repo + '/' + (c.branch || 'HEAD') + '/' + it.path);
+            const r = await fetch(url, { cache:'no-store' });
+            if (!r.ok) return;
+            this.collect(map, await r.json());
+          } catch(e){}
+        }));
+        this._ghHit = c;
+        return Object.values(map);
+      } catch(e){}
+    }
+    throw new Error('no-github');
+  }
+
+  // ②a フォルダ自動列挙：サーバが返すディレクトリ一覧(HTML)から *.json を拾う。
+  //     python3 -m http.server など多くの簡易サーバで有効。manifest 不要で「入れたら出る」。
+  async loadFromAutoIndex(){
+    const base = this.dataDir();
+    const res = await fetch(base, { cache:'no-store' });
+    if (!res.ok) throw new Error('autoindex ' + res.status);
+    const ct = (res.headers.get('content-type') || '');
+    if (!/html/i.test(ct)) throw new Error('autoindex-not-html');
+    const html = await res.text();
+    const names = new Set();
+    const re = /href="([^"]+\.json)"/gi; let m;
+    while ((m = re.exec(html))) {
+      let n = m[1].split('?')[0].split('#')[0].split('/').pop();
+      try { n = decodeURIComponent(n); } catch(e){}
+      if (n && n !== 'manifest.json') names.add(n);
+    }
+    if (!names.size) throw new Error('autoindex-empty');
+    const map = {};
+    await Promise.all([...names].map(async (fn)=>{
+      try {
+        const r = await fetch(base + encodeURIComponent(fn), { cache:'no-store' });
+        if (!r.ok) return;
+        this.collect(map, await r.json());
+      } catch(e){}
+    }));
+    return Object.values(map);
+  }
+
+  // ②b 相対フォルダ + manifest.json を読む（自動列挙が使えないサーバ向け）。
+  async loadFromRelative(){
+    const base = this.dataDir();
+    const mres = await fetch(base + 'manifest.json', { cache:'no-store' });
+    if (!mres.ok) throw new Error('manifest');
+    const files = await mres.json();
+    if (!Array.isArray(files)) throw new Error('manifest-shape');
+    const map = {};
+    await Promise.all(files.map(async (fn)=>{
+      try {
+        const r = await fetch(base + encodeURIComponent(fn), { cache:'no-store' });
+        if (!r.ok) return;
+        this.collect(map, await r.json());
+      } catch(e){}
+    }));
+    return Object.values(map);
+  }
+
+  async loadData(silent){
+    if (!silent) this.setState({ loading: true });
+    // ① GitHub（Pages から自動判定、または owner/repo を設定済みのとき）
+    if (this.ghCandidates().length) {
+      try {
+        const users = await this.loadFromGitHub();
+        if (users.length) { this.setState({ users, loading:false, loadError:false, source:'github', loadedAt:new Date() }); return; }
+      } catch(e){}
+    }
+    // ②a フォルダ自動列挙（簡易サーバ）：Json に入れるだけで反映。manifest 不要。
+    try {
+      const users = await this.loadFromAutoIndex();
+      if (users.length) { this.setState({ users, loading:false, loadError:false, source:'repo', loadedAt:new Date() }); return; }
+    } catch(e){}
+    // ②b 相対フォルダ + manifest（自動列挙が使えないサーバ向け）
+    try {
+      const users = await this.loadFromRelative();
+      if (users.length) { this.setState({ users, loading:false, loadError:false, source:'repo', loadedAt:new Date() }); return; }
+    } catch(e){}
+    // ③ 読み込み失敗（サンプルは出さず、理由を表示して Json/ の内容だけを反映する）
+    this.setState({ users: [], loading:false, loadError:true, source:'error', loadedAt:new Date() });
+  }
+
+  fmt(d){ return String(d || '').replace(/-/g,'.').replace(/^(\d{4})\./,''); }
+  fmtFull(d){ return String(d || '').replace(/-/g,'.'); }
+  pad(n){ return n<10 ? '0'+n : ''+n; }
+
+  tone(pct){
+    const th = this.threshold();
+    if (pct >= th) return { num:'#0d8f78', bg:'#daf0e9', bd:'#b6e2d6' };
+    if (pct >= 50) return { num:'#c08524', bg:'#fbf0db', bd:'#f0dcae' };
+    return { num:'#cf5642', bg:'#fbe7e2', bd:'#f3cdc4' };
+  }
+  clearBadge(cleared){
+    return { fontFamily:"'Roboto Mono',monospace", fontSize:'11px', fontWeight:700, padding:'2px 9px', borderRadius:'999px',
+      color: cleared>=3?'#0d8f78':(cleared>=1?'#c08524':'#9aaca9'),
+      background: cleared>=3?'#e3f5f0':(cleared>=1?'#fbf0db':'#eef2f1') };
+  }
+  partAgg(subs, p){
+    const a = subs.filter(s=>s.part===p);
+    if (!a.length) return { empty:true };
+    let best = a[0], latest = a[0];
+    a.forEach(s=>{ if (s.percent>best.percent) best = s; if (String(s.date)>String(latest.date)) latest = s; });
+    return { empty:false, best, latest, attempts:a.length };
+  }
+
+  renderVals(){
+    const th = this.threshold();
+    const sortBy = this.props.sortBy ?? 'progress';
+    const users = this.state.users || [];
+
+    const roster = users.map(u=>{
+      const subs = u.submissions || [];
+      let cleared = 0;
+      const cells = [1,2,3,4,5].map(p=>{
+        const ag = this.partAgg(subs, p);
+        if (ag.empty) return { empty:true, filled:false,
+          boxStyle:{ minHeight:'70px', borderRadius:'11px', border:'1px dashed #cdd9d7', background:'#f3f6f5', display:'flex', alignItems:'center', justifyContent:'center', padding:'10px 12px' } };
+        const pct = ag.best.percent; const t = this.tone(pct);
+        if (pct >= th) cleared++;
+        return { empty:false, filled:true,
+          percentLabel: pct + '%', scoreLabel: ag.best.correct + '/' + ag.best.total,
+          dateLabel: this.fmt(ag.latest.date), attemptsLabel: ag.attempts > 1 ? ag.attempts + '回' : '',
+          numStyle:{ fontFamily:"'Roboto Mono',monospace", fontSize:'22px', fontWeight:700, lineHeight:1, color:t.num },
+          attemptStyle:{ fontFamily:"'Roboto Mono',monospace", fontSize:'10px', color:'#9aaca9', background:'#eef2f1', borderRadius:'5px', padding: ag.attempts>1 ? '2px 6px' : '0' },
+          boxStyle:{ minHeight:'70px', borderRadius:'11px', border:'1px solid '+t.bd, background:t.bg, display:'flex', flexDirection:'column', justifyContent:'center', padding:'12px 13px' } };
+      });
+
+      const allDates = subs.map(s=>s.date).sort();
+      const attempts = subs.slice().sort((a,b)=>String(b.date).localeCompare(String(a.date))).map(s=>{
+        const ip = s.percent >= th; const t = this.tone(s.percent);
+        return { partLabel:'Part '+s.part, dateLabel:this.fmtFull(s.date), pctLabel:s.percent+'%', scoreLabel:s.correct+'/'+s.total,
+          resultLabel: ip ? '合格' : '不合格', isPass: ip,
+          fillStyle:{ width: Math.max(s.percent,3)+'%', height:'100%', borderRadius:'99px', background:t.num },
+          chipStyle:{ fontFamily:"'Roboto Mono',monospace", fontSize:'11px', fontWeight:700, textAlign:'center', padding:'4px 0', borderRadius:'999px', color: ip?'#0d8f78':'#cf5642', background: ip?'#e3f5f0':'#fbe7e2', border:'1px solid '+(ip?'#bfe8df':'#f3cdc4') } };
+      });
+
+      const expanded = !!this.state.expanded[u.key];
+      const bestOverall = subs.length ? Math.max.apply(null, subs.map(s=>s.percent)) : 0;
+      return {
+        key:u.key, name:u.name, cells, cleared, clearedLabel: cleared + '/5',
+        clearBadgeStyle: this.clearBadge(cleared),
+        attempts, attemptCount: subs.length, expanded,
+        chevronStyle:{ fontFamily:"'Roboto Mono',monospace", fontSize:'22px', color:'#b3c2bf', transform: expanded?'rotate(90deg)':'none', transition:'transform .2s', display:'inline-block' },
+        _cleared: cleared, _best: bestOverall, _last: allDates.length?allDates[allDates.length-1]:'',
+        onToggle: ()=>this.setState(s=>({ expanded:{ ...s.expanded, [u.key]: !s.expanded[u.key] } })),
+      };
+    });
+
+    if (sortBy === 'name') roster.sort((a,b)=>a.name.localeCompare(b.name,'ja'));
+    else if (sortBy === 'recent') roster.sort((a,b)=>String(b._last).localeCompare(String(a._last)));
+    else roster.sort((a,b)=> (b._cleared-a._cleared) || (b._best-a._best) || String(b._last).localeCompare(String(a._last)) );
+
+    const subTotal = users.reduce((a,u)=>a+u.submissions.length,0);
+    const lastDate = users.reduce((m,u)=>{ u.submissions.forEach(s=>{ if (String(s.date)>m) m=String(s.date); }); return m; }, '');
+
+    const err = this.state.loadError;
+    const la = this.state.loadedAt;
+    const loadedLabel = la ? ('最終更新 ' + this.pad(la.getHours()) + ':' + this.pad(la.getMinutes())) : '';
+
+    return {
+      thresholdLabel: th + '%',
+      dirLabel: this.dataDir(),
+      stat: { learners: users.length, subs: subTotal, lastDate: lastDate ? this.fmtFull(lastDate) : '—' },
+      roster,
+      showLoading: this.state.loading && users.length === 0,
+      showEmpty: !this.state.loading && users.length === 0 && !err,
+      fallbackNote: err,
+      sourceLabel: err ? '読み込めません' : '最新の状態',
+      sourceDotStyle:{ width:'9px', height:'9px', borderRadius:'50%', background: err ? '#d9a23b' : '#2fd4c4', boxShadow:'0 0 0 4px ' + (err ? 'rgba(217,162,59,.18)' : 'rgba(47,212,196,.18)') },
+      loadedLabel,
+      spinStyle: this.state.loading ? { display:'inline-block', animation:'ebSpin .8s linear infinite' } : { display:'inline-block' },
+      onRefresh: ()=>this.loadData(),
+    };
+  }
+}
+</script>
+</body>
+</html>
