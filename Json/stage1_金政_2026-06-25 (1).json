@@ -1,0 +1,164 @@
+{
+  "test": "Stage1 Knowledge Test (rich proto)",
+  "examinee": "金政",
+  "date": "2026-06-25",
+  "score": {
+    "correct": 0,
+    "total": 25,
+    "percent": 0,
+    "result": "fail"
+  },
+  "answers": [
+    {
+      "no": 1,
+      "id": "P3-028",
+      "chapter": "第8章",
+      "correct": false
+    },
+    {
+      "no": 2,
+      "id": "P3-030",
+      "chapter": "第8章",
+      "correct": false
+    },
+    {
+      "no": 3,
+      "id": "P3-022",
+      "chapter": "第7章",
+      "correct": false
+    },
+    {
+      "no": 4,
+      "id": "P3-029",
+      "chapter": "第8章",
+      "correct": false
+    },
+    {
+      "no": 5,
+      "id": "P3-037",
+      "chapter": "第9章",
+      "correct": false
+    },
+    {
+      "no": 6,
+      "id": "P3-039",
+      "chapter": "第9章",
+      "correct": false
+    },
+    {
+      "no": 7,
+      "id": "P3-035",
+      "chapter": "第9章",
+      "correct": false
+    },
+    {
+      "no": 8,
+      "id": "P3-005",
+      "chapter": "第6章",
+      "correct": false
+    },
+    {
+      "no": 9,
+      "id": "P3-026",
+      "chapter": "第8章",
+      "correct": false
+    },
+    {
+      "no": 10,
+      "id": "P3-044",
+      "chapter": "第10章",
+      "correct": false
+    },
+    {
+      "no": 11,
+      "id": "P3-004",
+      "chapter": "第6章",
+      "correct": false
+    },
+    {
+      "no": 12,
+      "id": "P3-017",
+      "chapter": "第7章",
+      "correct": false
+    },
+    {
+      "no": 13,
+      "id": "P3-025",
+      "chapter": "第7章",
+      "correct": false
+    },
+    {
+      "no": 14,
+      "id": "P3-021",
+      "chapter": "第7章",
+      "correct": false
+    },
+    {
+      "no": 15,
+      "id": "P3-023",
+      "chapter": "第7章",
+      "correct": false
+    },
+    {
+      "no": 16,
+      "id": "P3-003",
+      "chapter": "第6章",
+      "correct": false
+    },
+    {
+      "no": 17,
+      "id": "P3-024",
+      "chapter": "第7章",
+      "correct": false
+    },
+    {
+      "no": 18,
+      "id": "P3-033",
+      "chapter": "第9章",
+      "correct": false
+    },
+    {
+      "no": 19,
+      "id": "P3-027",
+      "chapter": "第8章",
+      "correct": false
+    },
+    {
+      "no": 20,
+      "id": "P3-011",
+      "chapter": "第6章",
+      "correct": false
+    },
+    {
+      "no": 21,
+      "id": "P3-040",
+      "chapter": "第10章",
+      "correct": false
+    },
+    {
+      "no": 22,
+      "id": "P3-041",
+      "chapter": "第10章",
+      "correct": false
+    },
+    {
+      "no": 23,
+      "id": "P3-015",
+      "chapter": "第6章",
+      "correct": false
+    },
+    {
+      "no": 24,
+      "id": "P3-043",
+      "chapter": "第10章",
+      "correct": false
+    },
+    {
+      "no": 25,
+      "id": "P3-007",
+      "chapter": "第6章",
+      "correct": false
+    }
+  ],
+  "checksum": "f3b02d59d9442"
+}
