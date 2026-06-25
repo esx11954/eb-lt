@@ -1,0 +1,164 @@
+{
+  "test": "Stage1 Knowledge Test (rich proto)",
+  "examinee": "金政",
+  "date": "2026-06-25",
+  "score": {
+    "correct": 0,
+    "total": 25,
+    "percent": 0,
+    "result": "fail"
+  },
+  "answers": [
+    {
+      "no": 1,
+      "id": "P1-002",
+      "chapter": "第1章",
+      "correct": false
+    },
+    {
+      "no": 2,
+      "id": "P1-007",
+      "chapter": "第1章",
+      "correct": false
+    },
+    {
+      "no": 3,
+      "id": "P1-020",
+      "chapter": "第3章",
+      "correct": false
+    },
+    {
+      "no": 4,
+      "id": "P1-015",
+      "chapter": "第2章",
+      "correct": false
+    },
+    {
+      "no": 5,
+      "id": "P1-023",
+      "chapter": "第3章",
+      "correct": false
+    },
+    {
+      "no": 6,
+      "id": "P1-006",
+      "chapter": "第1章",
+      "correct": false
+    },
+    {
+      "no": 7,
+      "id": "P1-012",
+      "chapter": "第2章",
+      "correct": false
+    },
+    {
+      "no": 8,
+      "id": "P1-029",
+      "chapter": "第4章",
+      "correct": false
+    },
+    {
+      "no": 9,
+      "id": "P1-016",
+      "chapter": "第2章",
+      "correct": false
+    },
+    {
+      "no": 10,
+      "id": "P1-017",
+      "chapter": "第2章",
+      "correct": false
+    },
+    {
+      "no": 11,
+      "id": "P1-018",
+      "chapter": "第3章",
+      "correct": false
+    },
+    {
+      "no": 12,
+      "id": "P1-003",
+      "chapter": "第1章",
+      "correct": false
+    },
+    {
+      "no": 13,
+      "id": "P1-030",
+      "chapter": "第4章",
+      "correct": false
+    },
+    {
+      "no": 14,
+      "id": "P1-009",
+      "chapter": "第1章",
+      "correct": false
+    },
+    {
+      "no": 15,
+      "id": "P1-021",
+      "chapter": "第3章",
+      "correct": false
+    },
+    {
+      "no": 16,
+      "id": "P1-011",
+      "chapter": "第2章",
+      "correct": false
+    },
+    {
+      "no": 17,
+      "id": "P1-028",
+      "chapter": "第4章",
+      "correct": false
+    },
+    {
+      "no": 18,
+      "id": "P1-004",
+      "chapter": "第1章",
+      "correct": false
+    },
+    {
+      "no": 19,
+      "id": "P1-026",
+      "chapter": "第3章",
+      "correct": false
+    },
+    {
+      "no": 20,
+      "id": "P1-025",
+      "chapter": "第3章",
+      "correct": false
+    },
+    {
+      "no": 21,
+      "id": "P1-013",
+      "chapter": "第2章",
+      "correct": false
+    },
+    {
+      "no": 22,
+      "id": "P1-014",
+      "chapter": "第2章",
+      "correct": false
+    },
+    {
+      "no": 23,
+      "id": "P1-027",
+      "chapter": "第4章",
+      "correct": false
+    },
+    {
+      "no": 24,
+      "id": "P1-008",
+      "chapter": "第1章",
+      "correct": false
+    },
+    {
+      "no": 25,
+      "id": "P1-019",
+      "chapter": "第3章",
+      "correct": false
+    }
+  ],
+  "checksum": "36137306bdec3"
+}
